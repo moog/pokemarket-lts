@@ -131,3 +131,9 @@ Response
     transactionStatus: 'paid'
 }
 ```
+
+## Implementações futuras
+    - Filtrar, deletar, e possibilitar a compra de vários pokemons
+    - Middleware de autenticação com passport e jwt
+    - Middleware de autorização (admin e cliente)
+    
