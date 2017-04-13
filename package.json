@@ -1,0 +1,39 @@
+{
+  "name": "pokemarket",
+  "version": "1.0.0",
+  "description": "Teste da Pagarme",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "pm2 start -f -i 1 src/index.js --watch",
+    "stop": "pm2 delete index",
+    "dev": "pm2 start -f -i 1 src/index.js --watch && pm2 logs index",
+    "test": "jest --forceExit",
+    "log": "pm2 logs index"
+  },
+  "author": "Mateus Moog",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "body-parser": "^1.15.2",
+    "bunyan": "^1.8.10",
+    "cors": "^2.8.3",
+    "dotenv": "^4.0.0",
+    "express": "*",
+    "express-validation": "^1.0.2",
+    "helmet": "^3.5.0",
+    "joi": "^10.4.1",
+    "morgan": "^1.8.1",
+    "mysql": "^2.13.0",
+    "pagarme": "^3.0.2",
+    "rotating-file-stream": "^1.2.1",
+    "sequelize": "^3.30.4"
+  },
+  "devDependencies": {
+    "jest": "^19.0.2",
+    "supertest": "^3.0.0"
+  },
+  "engines": {
+    "node": "6.10.2",
+    "npm": "3.10.10"
+  }
+}

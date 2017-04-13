@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+  - "6.10.2"
+script: npm install -g pm2 && npm test
+env:
+  global: 
+    - PROD=false
+    - API_ADDRESS=localhost
+    - API_PORT=1991
+    - DB_USER=travis
+    - DB_PASS=
+    - DB_NAME=pokemarket
+    - DB_DIALECT=mysql
+    - DB_LOGGING=false
+    - PAGARME_APIKEY=ak_test_WHgSu2XFmvoopAZMetV3LfA2RfEEQg
+before_install:
+  - mysql -e 'CREATE DATABASE pokemarket;'
