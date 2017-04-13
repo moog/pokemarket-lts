@@ -1,4 +1,4 @@
-<img src="https://travis-ci.org/MateusMoog/pokemarket-lts.svg?branch=master" />
+[![Build Status](https://travis-ci.org/MateusMoog/pokemarket-lts.svg?branch=master)](https://travis-ci.org/MateusMoog/pokemarket-lts)
 
 # Pokemarket 
 
@@ -136,4 +136,3 @@ Response
     - Filtrar, deletar, e possibilitar a compra de vários pokemons
     - Middleware de autenticação com passport e jwt
     - Middleware de autorização (admin e cliente)
-    
