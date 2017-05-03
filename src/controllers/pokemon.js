@@ -42,6 +42,7 @@ function buyPokemon (req, res) {
 
     let transaction = null;
     let pokemon = null;
+    let totalAmount = null; 
 
     Promise.props({
             transaction: sequelize.transaction(),
@@ -52,39 +53,36 @@ function buyPokemon (req, res) {
             pokemon = pokemonTransaction.pokemon;
 
             if (!pokemon) {
-                return res.status(404).json({ 
+                return Promise.reject({ 
+                    status: 404,
                     error: errors.POKEMON_NONEXISTENT,
                     message: 'This Pokemon not exist.'
-                });            
+                });           
             }
 
-            // Calcuate and validate amount 
-            const totalAmount = req.body.quantity * pokemon.price;    
-            if(!pagarme.isValidAmount(totalAmount)) {        
-                return res.status(400).json({ 
+            // Calcuate and validate amount  
+            totalAmount = req.body.quantity * pokemon.price
+            if(!pagarme.isValidAmount(totalAmount)) {  
+                return Promise.reject({ 
+                    status: 400,
                     error: errors.EXPENSIVE, 
                     message: 'The total amount of this purchase is too much high. Please, be most humble. :p' 
-                });
+                });    
             }
 
             // Verify if the quantity is on stock
-            if (pokemon.stock < req.body.quantity) {
-                return res.status(400).json({ 
+            if (pokemon.stock < req.body.quantity) {  
+                return Promise.reject({ 
+                    status: 400,
                     error: errors.OUT_STOCK, 
                     message: `We only have ${pokemon.stock} ${pokemon.name} in stock.` 
-                });
+                });   
             }
 
             return pokemon.decrement('stock', { by: req.body.quantity, transaction });
         })
-        .catch((err) => {
-            return res.status(400).json({ 
-                error: errors.DB_STOCK, 
-                message: 'Error while get the pokemon quantity on stock. Try again latter.' 
-            });
-        })
         .then(() => {
-            // Update the model
+            // Update model
             return pokemon.reload();
         })
         .then(() => {    
@@ -108,12 +106,15 @@ function buyPokemon (req, res) {
         })
         .then((pagarmeTransaction) => {        
             if (pagarmeTransaction.status == pagarme.transactionStatus.PAID) {
-                return transaction.commit();
+                return Promise.props({
+                    commit: transaction.commit(),
+                    pagarmeTransaction
+                });
             } else {
-                throw new Error(pagarmeTransaction);
+                return Promise.reject(pagarmeTransaction);
             }
         })
-        .then((pagarmeTransaction) => {
+        .then(({ pagarmeTransaction }) => {
             return res.json({ 
                 error: errors.NO_ERROR,
                 transactionStatus: pagarmeTransaction.status
@@ -122,10 +123,14 @@ function buyPokemon (req, res) {
         .catch((err) => {
             transaction.rollback();
 
-            return res.status(400).json({
-                error: errors.PURCHASE_FAILED,
-                message: 'The purchase failed, try again latter.'
-            });
+            if (err.status >= 400) {
+                return res.status(err.status).json({ error: err.error, message: err.message });
+            } else {
+                return res.status(400).json({
+                    error: errors.PURCHASE_FAILED,
+                    message: 'The purchase failed, try again latter.'
+                });
+            }
         });
 };
 

@@ -15,7 +15,7 @@ let buyNonexistentModel = { uuid: '9afc8409-2890-4e3f-b365-deaaf2b28e01', quanti
 describe('PokeMarket', () => {
     
     it('should create a pokemon', () => {
-        request
+        return request
             .put('/pokemons')
             .send(model)
             .expect(200)
@@ -31,7 +31,7 @@ describe('PokeMarket', () => {
     });
     
     it('should get all pokemons', () => {
-        request
+        return request
             .get('/pokemons')
             .expect(200)            
             .then(({ body }) => {        
@@ -43,7 +43,7 @@ describe('PokeMarket', () => {
     });
     
     it(`should not be able to make a purchase priced above ${pagarme.maxAmount}`, () => {
-        request
+        return request
             .post('/pokemons/buy')
             .send(buyExpensiveModel)
             .expect(400)         
@@ -53,7 +53,7 @@ describe('PokeMarket', () => {
     });
     
     it('should buy a pokemon', () => {
-        request
+        return request
             .post('/pokemons/buy')
             .send(buyModel)
             .expect(200)         
@@ -64,7 +64,7 @@ describe('PokeMarket', () => {
     });
     
     it('should not buy a pokemon out stock', () => {
-        request
+        return request
             .post('/pokemons/buy')
             .send(buyOutStockModel)
             .expect(400)        
@@ -74,7 +74,7 @@ describe('PokeMarket', () => {
     });
     
     it('should not buy a nonexistent pokemon', () => {
-        request
+        return request
             .post('/pokemons/buy')
             .send(buyNonexistentModel)
             .expect(404)
