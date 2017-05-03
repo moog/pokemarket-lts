@@ -8,5 +8,6 @@ module.exports = {
     OUT_STOCK: 31,
     DB_STOCK: 32,
     EXPENSIVE: 40,
-    PURCHASE_FAILED: 41
+    PURCHASE_FAILED: 41,
+    REQUEST_VALIDATOR: 50
 };
